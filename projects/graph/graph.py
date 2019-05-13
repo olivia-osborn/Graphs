@@ -31,13 +31,23 @@ class Graph:
         beginning from starting_vertex.
         """
         # Create an empty Queue
+        q = Queue()
         # Create an empty Visited set
+        visited = set()
         # Add the starting vertex to the queue
+        q.enqueue(starting_vertex)
         # While the queue is not empty...
-        # Dequeue the first vertex
-        # If it has not been visited...
-            # Mark it as visited (print it and add it to the visited set)
-            # Then enqueue each of its neighbors in the queue
+        while q.size() > 0:
+            # Dequeue the first vertex
+            v = q.dequeue()
+            # If it has not been visited...
+            if v not in visited:
+                # Mark it as visited (print it and add it to the visited set)
+                print(v)
+                visited.add(v)
+                # Then enqueue each of its neighbors in the queue
+                for neighbor in self.vertices[v]:
+                    q.enqueue(neighbor)
 
     def dft(self, starting_vertex):
         """
