@@ -73,7 +73,7 @@ class Graph:
                 for neighbor in self.vertices[v]:
                     s.push(neighbor)
 
-    def dft_recursive(self, starting_vertex, visited=set()):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
@@ -81,19 +81,35 @@ class Graph:
         """
         # Mark the starting node as visited
         # Call dft_recursive on each unvisited child
+        if visited is None:
+            visited = set()
         print(starting_vertex)
         visited.add(starting_vertex)
         for neighbor in self.vertices[starting_vertex]:
             if neighbor not in visited:
                 self.dft_recursive(neighbor, visited)
 
-    def bfs(self, starting_vertex, destination_vertex):
+    def bfs(self, starting_vertex, destination_vertex, parent=None):
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        q = Queue()
+        visited = set()
+        q.enqueue([starting_vertex])
+        while q.size() > 0:
+            path = q.dequeue()
+            last = path[-1]
+            if last not in visited:
+                neighbors = self.vertices[last]
+                for neighbor in neighbors:
+                    new_path = list(path)
+                    new_path.append(neighbor)
+                    q.enqueue(new_path)
+                    if neighbor == destination_vertex:
+                        return new_path
+                    visited.add(last)
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -164,13 +180,13 @@ if __name__ == '__main__':
         1, 2, 4, 7, 6, 3, 5
         1, 2, 4, 6, 3, 5, 7
     '''
-    graph.dft_recursive(1)
+    # graph.dft_recursive(1)
 
     '''
     Valid BFS path:
         [1, 2, 4, 6]
     '''
-    # print(graph.bfs(1, 6))
+    print(graph.bfs(1, 6))
 
     '''
     Valid DFS paths:
