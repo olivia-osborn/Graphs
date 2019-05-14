@@ -1,8 +1,13 @@
+import random
 
 
 class User:
     def __init__(self, name):
         self.name = name
+
+    def __repr__(self):
+        return self.name
+
 
 class SocialGraph:
     def __init__(self):
@@ -47,8 +52,19 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-
+        for i in range(numUsers):
+            self.addUser(f"User {i+1}")
         # Create friendships
+        # avgFriendships = totalFriendships / numUsers
+        # totalFriendships = avgFriendships * numUsers
+        possibleFriendships = []
+        for userID in self.users:
+            for friendID in range(userID + 1, self.lastID + 1):
+                possibleFriendships.append((userID, friendID))
+        random.shuffle(possibleFriendships)
+        for friendshipIndex in range(avgFriendships * numUsers // 2):
+            friendship = possibleFriendships[friendshipIndex]
+            self.addFriendship(friendship[0], friendship[1])
 
     def getAllSocialPaths(self, userID):
         """
@@ -59,10 +75,26 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
+        # Create an empty Queue
+        q = Queue()
+        # Create an empty Visited set
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
-        return visited
+        # Add the starting userID to the queue
+        q.enqueue(userID)
+        # While the queue is not empty...
+        while q.size() > 0:
+            # Dequeue the first vertex
+            v = q.dequeue()
+            # If it has not been visited...
+            if v not in visited:
+                # Mark it as visited (print it and add it to the visited set)
+                print(v)
+                visited.add(v)
+                # Then enqueue each of its neighbors in the queue
+                for neighbor in self.vertices[v]:
+                    q.enqueue(neighbor)
 
+        return visited
 
 if __name__ == '__main__':
     sg = SocialGraph()
@@ -70,3 +102,4 @@ if __name__ == '__main__':
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
+    print(sg.users)
