@@ -1,4 +1,5 @@
 import random
+from util import Queue
 
 
 class User:
@@ -75,26 +76,29 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        # Create an empty Queue
+
         q = Queue()
         # Create an empty Visited set
         visited = {}  # Note that this is a dictionary, not a set
-        # Add the starting userID to the queue
-        q.enqueue(userID)
+        # Add a path to the starting vertex to the queue
+        q.enqueue([userID])
         # While the queue is not empty...
         while q.size() > 0:
-            # Dequeue the first vertex
-            v = q.dequeue()
+            # Dequeue the first PATH
+            path = q.dequeue()
+            # Grab the last vertex of the path
+            v = path[-1]
             # If it has not been visited...
             if v not in visited:
-                # Mark it as visited (print it and add it to the visited set)
-                print(v)
-                visited.add(v)
-                # Then enqueue each of its neighbors in the queue
-                for neighbor in self.vertices[v]:
-                    q.enqueue(neighbor)
-
+                # mark it as visited
+                visited[v] = path
+                # Then enqueue PATHS to each of its neighbors in the queue
+                for friendship in self.friendships[v]:
+                    path_copy = path.copy()
+                    path_copy.append(friendship)
+                    q.enqueue(path_copy)
         return visited
+
 
 if __name__ == '__main__':
     sg = SocialGraph()
@@ -103,3 +107,4 @@ if __name__ == '__main__':
     connections = sg.getAllSocialPaths(1)
     print(connections)
     print(sg.users)
+    print(sg.getAllSocialPaths(1))
